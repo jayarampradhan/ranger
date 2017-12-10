@@ -70,21 +70,30 @@ import io.smartcat.ranger.distribution.UniformDistribution;
  */
 public class ValueExpressionParser extends BaseParser<Object> {
 
-    private static final String STRING_VALUE_DELIMITER = "stringValueDelimiter";
+    /**
+     * String value delimiter.
+     */
+    public static final String STRING_VALUE_DELIMITER = "stringValueDelimiter";
 
-    private final Map<String, ValueProxy<?>> proxyValues;
+    /**
+     * Proxy values.
+     */
+    public final Map<String, ValueProxy<?>> proxyValues;
 
     /**
      * Range value factory.
      */
-    protected final RangeValueFactory rangeValueFactory;
+    public final RangeValueFactory rangeValueFactory;
 
     /**
      * Circular range value factory.
      */
-    protected final CircularRangeValueFactory circularRangeValueFactory;
+    public final CircularRangeValueFactory circularRangeValueFactory;
 
-    private String parentName;
+    /**
+     * Parent name.
+     */
+    public String parentName;
 
     /**
      * Constructs parser with initial <code>proxyValues</code>.
@@ -526,7 +535,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param functionName Name of a function.
      * @return Function definition rule.
      */
-    protected Rule function(String functionName) {
+    public Rule function(String functionName) {
         return function(functionName, fromStringLiteral(""));
     }
 
@@ -536,7 +545,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param functionArgument Function argument rule.
      * @return Function definition rule.
      */
-    protected Rule function(Rule functionArgument) {
+    public Rule function(Rule functionArgument) {
         return function("", functionArgument);
     }
 
@@ -547,7 +556,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param functionArgument Function argument rule.
      * @return Function definition rule.
      */
-    protected Rule function(String functionName, Rule functionArgument) {
+    public Rule function(String functionName, Rule functionArgument) {
         return Sequence(functionName, openParenthesis(), functionArgument, closedParenthesis());
     }
 
@@ -557,7 +566,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param rule Rule of a list item.
      * @return Bracket list definition rule.
      */
-    protected Rule bracketList(Rule rule) {
+    public Rule bracketList(Rule rule) {
         return Sequence(openBracket(), list(rule), closedBracket());
     }
 
@@ -567,7 +576,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param rule Rule of a list item.
      * @return List definition rule.
      */
-    protected Rule list(Rule rule) {
+    public Rule list(Rule rule) {
         return Sequence(Sequence(push("args"), Optional(rule, ZeroOrMore(comma(), rule))),
                 push(getItemsUpToDelimiter("args")));
     }
@@ -910,7 +919,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      *
      * @return True if matched string is parsed to Integer, otherwise false.
      */
-    protected boolean tryParseInt() {
+    public boolean tryParseInt() {
         String match = match();
         Integer i = null;
         try {
@@ -928,7 +937,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return Instance of {@link NormalDistribution}.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected NormalDistribution createNormalDistribution() {
+    public NormalDistribution createNormalDistribution() {
         List<Number> args = (List) pop();
         if (args.isEmpty()) {
             return new NormalDistribution();
@@ -947,7 +956,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return Instance of {@link DiscreteValue}.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected DiscreteValue createDiscreteValue() {
+    public DiscreteValue createDiscreteValue() {
         return peek() instanceof Distribution ? new DiscreteValue((List) pop(1), (Distribution) pop())
                 : new DiscreteValue((List) pop());
     }
@@ -959,7 +968,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param end End of the range.
      * @return An instance of {@link Range}.
      */
-    protected Range<?> createNumberRange(Number beginning, Number end) {
+    public Range<?> createNumberRange(Number beginning, Number end) {
         if (beginning instanceof Double || end instanceof Double) {
             return new Range<Double>(beginning.doubleValue(), end.doubleValue());
         }
@@ -987,7 +996,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return Instance of {@link RangeValueLong}.
      */
     @SuppressWarnings({ "rawtypes" })
-    protected RangeValue createRangeValue() {
+    public RangeValue createRangeValue() {
         Distribution dist = peek() instanceof Distribution ? (Distribution) pop() : null;
         Boolean useEdgeCases = peek() instanceof Boolean ? (Boolean) pop() : null;
         Range range = (Range) pop();
@@ -1018,7 +1027,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return Instance of {@link RandomContentStringValue}.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected RandomContentStringValue createRandomContentStringValue() {
+    public RandomContentStringValue createRandomContentStringValue() {
         return peek() instanceof List ? new RandomContentStringValue((Value<Integer>) pop(1), (List) pop())
                 : new RandomContentStringValue((Value<Integer>) pop());
     }
@@ -1141,7 +1150,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param s String to be trimmed off.
      * @return Trimmed off string.
      */
-    protected String trimOffEnds(String s) {
+    public String trimOffEnds(String s) {
         return s.substring(1, s.length() - 1);
     }
 
@@ -1151,7 +1160,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param name Name of the value proxy.
      * @return Proxy value.
      */
-    protected Value<?> getValueProxy(String name) {
+    public Value<?> getValueProxy(String name) {
         String parent = parentName;
         while (parent != null) {
             String testName = null;
@@ -1175,7 +1184,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @param name Name from which to strip off the last reference.
      * @return Name with stripped off last reference.
      */
-    protected String stripOffLastReference(String name) {
+    public String stripOffLastReference(String name) {
         if (!name.contains(".")) {
             return "";
         } else {
@@ -1189,7 +1198,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return Instance of {@link StringTransformer}.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected Value<String> getStringValue() {
+    public Value<String> getStringValue() {
         List values = getItemsUpToDelimiter(STRING_VALUE_DELIMITER);
         String formatString = (String) pop();
         return new StringTransformer(formatString, values);
@@ -1203,7 +1212,7 @@ public class ValueExpressionParser extends BaseParser<Object> {
      * @return List of items up to specified delimiter.
      */
     @SuppressWarnings({ "unchecked" })
-    protected <T> List<T> getItemsUpToDelimiter(String delimiter) {
+    public <T> List<T> getItemsUpToDelimiter(String delimiter) {
         List<T> result = new ArrayList<>();
         while (true) {
             Object val = pop();

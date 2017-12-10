@@ -30,9 +30,6 @@ public class ValueProxy<T> extends Value<T> {
      * @param delegate Value which will be evaluated and cached.
      */
     public void setDelegate(Value<T> delegate) {
-        if (delegate == null) {
-            throw new IllegalArgumentException("Delegate cannot be null.");
-        }
         this.delegate = delegate;
     }
 
